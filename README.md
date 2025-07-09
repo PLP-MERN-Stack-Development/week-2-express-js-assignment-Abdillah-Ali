@@ -1,63 +1,157 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=19913937&assignment_repo_type=AssignmentRepo)
-# Express.js RESTful API Assignment
+# Week 2: Express.js RESTful API
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
+This project is a RESTful API built with Express.js for managing a collection of products. It implements standard CRUD operations, middleware for logging, authentication, and validation, and advanced features like filtering, pagination, and search.
 
-## Assignment Overview
+## How to Run the Server
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
-
-## Getting Started
-
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
-
-## Files Included
-
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
-
-## Requirements
-
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+1.  **Install dependencies:**
+    ```bash
+    npm install express body-parser uuid
+    ```
+2.  **Start the server:**
+    ```bash
+    node server.js
+    ```
+    The server will be running on `http://localhost:3000`.
 
 ## API Endpoints
 
-The API will have the following endpoints:
+### Authentication
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+For `POST`, `PUT`, and `DELETE` requests, you need to provide an API key in the `x-api-key` header. The API key is `your-secret-api-key`.
 
-## Submission
+### Products
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+*   **`GET /api/products`**: List all products.
+    *   **Query Parameters:**
+        *   `category` (string, optional): Filter products by category.
+        *   `page` (number, optional, default: 1): Page number for pagination.
+        *   `limit` (number, optional, default: 10): Number of items per page.
+    *   **Example Request:** `GET /api/products?category=electronics&page=1&limit=5`
+    *   **Example Response:**
+        ```json
+        {
+          "page": 1,
+          "limit": 5,
+          "total": 2,
+          "data": [
+            {
+              "id": "1",
+              "name": "Laptop",
+              "description": "High-performance laptop with 16GB RAM",
+              "price": 1200,
+              "category": "electronics",
+              "inStock": true
+            },
+            {
+              "id": "2",
+              "name": "Smartphone",
+              "description": "Latest model with 128GB storage",
+              "price": 800,
+              "category": "electronics",
+              "inStock": true
+            }
+          ]
+        }
+        ```
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+*   **`GET /api/products/search`**: Search for products by name.
+    *   **Query Parameters:**
+        *   `name` (string, required): The name of the product to search for.
+    *   **Example Request:** `GET /api/products/search?name=Laptop`
+    *   **Example Response:**
+        ```json
+        [
+          {
+            "id": "1",
+            "name": "Laptop",
+            "description": "High-performance laptop with 16GB RAM",
+            "price": 1200,
+            "category": "electronics",
+            "inStock": true
+          }
+        ]
+        ```
 
-## Resources
+*   **`GET /api/products/stats`**: Get product statistics (count by category).
+    *   **Example Request:** `GET /api/products/stats`
+    *   **Example Response:**
+        ```json
+        {
+          "electronics": 2,
+          "kitchen": 1
+        }
+        ```
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+*   **`GET /api/products/:id`**: Get a specific product by ID.
+    *   **Example Request:** `GET /api/products/1`
+    *   **Example Response:**
+        ```json
+        {
+          "id": "1",
+          "name": "Laptop",
+          "description": "High-performance laptop with 16GB RAM",
+          "price": 1200,
+          "category": "electronics",
+          "inStock": true
+        }
+        ```
+
+*   **`POST /api/products`**: Create a new product.
+    *   **Request Body:**
+        ```json
+        {
+          "name": "New Product",
+          "description": "A brand new product",
+          "price": 100,
+          "category": "general",
+          "inStock": true
+        }
+        ```
+    *   **Example Response:**
+        ```json
+        {
+          "id": "some-uuid",
+          "name": "New Product",
+          "description": "A brand new product",
+          "price": 100,
+          "category": "general",
+          "inStock": true
+        }
+        ```
+
+*   **`PUT /api/products/:id`**: Update an existing product.
+    *   **Request Body:**
+        ```json
+        {
+          "name": "Updated Product",
+          "description": "An updated product",
+          "price": 150,
+          "category": "general",
+          "inStock": false
+        }
+        ```
+    *   **Example Response:**
+        ```json
+        {
+          "id": "1",
+          "name": "Updated Product",
+          "description": "An updated product",
+          "price": 150,
+          "category": "general",
+          "inStock": false
+        }
+        ```
+
+*   **`DELETE /api/products/:id`**: Delete a product.
+    *   **Example Request:** `DELETE /api/products/1`
+    *   **Example Response:** `204 No Content`
+
+## Environment Variables
+
+This project uses environment variables to configure the server. Create a `.env` file in the root of the project and add the following variables:
+
+```
+PORT=3000
+API_KEY=your-secret-api-key
+```
